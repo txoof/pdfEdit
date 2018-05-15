@@ -21,6 +21,6 @@ fi
 for each in "$@"
 do
   base=`basename "$each"`
-  echo "$each"
+  # check for failures and add to array of failures to report on later
   ./cpdf -decompress "$each" -o $tmpdir'/de'"$base"
 done
