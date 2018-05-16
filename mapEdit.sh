@@ -8,6 +8,7 @@
 
 myLongName='com.txoof.'`basename $0`
 myName=$0
+myDate=`date '+%Y-%m-%d_%H.%M'`
 
 if [ $# -lt 1 ]
 then
@@ -21,15 +22,16 @@ tmpdir='/tmp/'$myLongName
 
 if [ ! -d $tmpdir ]
 then
-  mkdir $tmpdir
+  mkdir "$tmpdir"
   if [ $? -gt 0 ]
   then
     echo failed to make temporary directory: /tmp/`basename $0`
     exit 1
   fi
+else
+  rm "$tmpdir"/*.pdf
 fi
 
-echo found $# files 
 failure=()
 decompressed=()
 edited=()
@@ -40,38 +42,76 @@ do
   base=`basename "$each"`
 
   # decompress the PDF with CPDF
-  decompFile="$tmpdir"'/de'"$base"
+  decompFile="$tmpdir"'/de_'"$base"
   if ./cpdf -decompress "$each" -o "$decompFile" > /dev/null 2>&1
   then
     decompressed+=("$decompFile")
   else
-    failure+=("$each")
-    echo FAILURE: "$each"
+    failure+=('fail decompression: '"$each")
     continue
   fi
 done
 
-for each in $decompressed
+# edit and compress here
+for each in "${decompressed[@]}"
 do
   # find and replace with sed
-  if sed -e "s/Student ID: /StudentID:/g"
+  if sed -i.bak -e "s/Student ID: /StudentID:/g" "$each"
   then
-    failure+=("$each")
-  else
     edited+=("$each")
+    rm "$each".bak
+  else
+    failure+=('fail find/replace: '"$each")
+  fi
+  # compress here
+  if ./cpdf -compress "$each" -o "$each" > /dev/null 2>&1
+  then
+    compressed+=("each")
+  else
+    failure+=('fail to compress: '"$each")
+  fi
+done
+
+echo merging
+# merge into one big pdf
+  outPath="$HOME"/Desktop/"$myDate"_MAP.pdf
+  if ./cpdf -merge "$tmpdir"/*.pdf -o $outPath 
+  then
+    echo created merged and edited file: "$outPath"
+  else
+    echo failed to create a merged file at "$outpath"
   fi
 
-  # compress the PDF
 
-
-done
+# compress the PDF
 
 # combine the individual PDFs into a massive PDF
 
-for fail in "$failure"
-do
-  echo Failed to process: "$fail"
-done
+totalPages=`./cpdf -pages $outPath`
 
-echo ----DECOMPRESSED: ${#decompressed[@]}----
-echo ----EDITED: ${#edited[@]}----
+echo ----DECOMPRESSED: ${#decompressed[@]}
+echo ----EDITED: ${#edited[@]}
+echo ----COMPRESSED: ${#compressed[@]}
+echo ----ACTUAL MERGED PAGES: $totalPages
+echo ----EXPECTED MERGED PAGES: $(( $#*2 ))
+
+if [ ! $(( $#*2 ))==$totalPages ]
+then
+  echo WARNING! Some student records were not processed properly
+  echo see failures below
+fi
+
+if [ ${#failure[@]} -gt 0 ]
+then
+  echo ---FAILURES: ${#failure[@]}
+  for fail in "${failure[@]}"
+  do
+    echo "$fail"
+  done
+else
+  echo successfully processed all input files
+fi
+
+echo cleaning up temporary files
+rm -r "$tmpdir"
+
