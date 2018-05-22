@@ -7,14 +7,16 @@
 # for mailing test results to parents
 
 myLongName='com.txoof.'`basename $0`
-myName=$0
+myName=`basename "$0"`
 myDate=`date '+%Y-%m-%d_%H.%M'`
 
 if [ $# -lt 1 ]
 then
-  echo $myName: edit individual MAP reports into file ready for AlertSolutions
-  echo usage: $myName doc1.pdf doc2.pdf doc3.pdf
-  echo supply at least one file name to process. exiting.
+  echo $myName: edits individual MAP reports into a file ready for AlertSolutions
+  echo =====================
+  echo command line usage: $myName doc1.pdf doc2.pdf doc3.pdf
+  echo =====================
+  echo point and click usage: drag multiple pdf documents into this window
   exit 0
 fi
 
