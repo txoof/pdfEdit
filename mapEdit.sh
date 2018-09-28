@@ -6,6 +6,9 @@
 # "StudentID:" to improve compatability with Alert Solutions in PowerSchool
 # for mailing test results to parents
 
+export PATH="$PATH:/usr/local/bin/"
+
+
 myLongName='com.txoof.'`basename $0`
 myName=`basename "$0"`
 myDate=`date '+%Y-%m-%d_%H.%M.%S'`
@@ -68,6 +71,7 @@ decompressed=()
 edited=()
 compressed=()
 added=()
+echo Decompressing files
 for each in "$@"
 do
   base=`basename "$each"`
@@ -85,6 +89,7 @@ do
 done
 
 # edit each file and compress
+echo Editing and recompressing files
 for each in "${decompressed[@]}"
 do
   # find and replace with sed
@@ -109,7 +114,7 @@ do
   fi
 done
 
-echo merging edited files
+echo Merging edited and compressed files
 # merge into one big pdf
   outPath="$HOME"/Desktop/"$myDate"_MAP.pdf
   qpdf --empty $outPath --pages "$tmpcmp"/cmp_*.pdf --
