@@ -11,9 +11,7 @@
 	<key>Author</key>
 	<string>aaron.ciuffo@gmail.com</string>
 	<key>BundledFiles</key>
-	<array>
-		<string>/Users/aciuffo/Documents/src/pdfEdit/cpdf</string>
-	</array>
+	<array/>
 	<key>Creator</key>
 	<string>Platypus-5.2</string>
 	<key>DeclareService</key>
@@ -255,6 +253,6 @@
 	<key>UseXMLPlistFormat</key>
 	<false/>
 	<key>Version</key>
-	<string>1.0</string>
+	<string>2.0</string>
 </dict>
 </plist>
