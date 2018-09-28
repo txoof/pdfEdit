@@ -23,8 +23,8 @@ A platypus wrapped GUI version for the Mac can be found in the mapEdit.app.zip f
 
 Requirements:
 -------------
-  qpdf must be available in $PATH (drag and drop expects /usr/local/bin/qpdf)
-  learn more about QPDF: http://qpdf.sourceforge.net/
-  
-  qpdf can be installed on the Mac using HomeBrew 
-  https://brew.sh/
+  * bash/posix environment (written for OS X)
+      - sed
+  * qpdf 
+      - must be available in $PATH (drag and drop expects /usr/local/bin/qpdf); learn more about QPDF: http://qpdf.sourceforge.net/
+      - qpdf can be installed on the Mac using HomeBrew https://brew.sh/
