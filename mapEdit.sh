@@ -12,11 +12,13 @@ myDate=`date '+%Y-%m-%d_%H.%M'`
 
 if [ $# -lt 1 ]
 then
-  echo $myName: edits individual MAP reports into a file ready for AlertSolutions
+  echo $myName: edits individual MAP reports into a single file ready for AlertSolutions
+#  echo This program depends on a local version of cpdf from Coherent PDF
+#  echo Visit http://www.coherentpdf.com/ to purchase
   echo =====================
   echo command line usage: $myName doc1.pdf doc2.pdf doc3.pdf
   echo =====================
-  echo point and click usage: drag multiple pdf documents into this window
+  echo point and click usage: drag multiple MAP pdf documents into this window
   exit 0
 fi
 
@@ -45,7 +47,8 @@ do
 
   # decompress the PDF with CPDF
   decompFile="$tmpdir"'/de_'"$base"
-  if ./cpdf -decompress "$each" -o "$decompFile" > /dev/null 2>&1
+  if qpdf --stream-data=uncompress "$each" "$decompFile" > /dev/null 2>&1
+  #if ./cpdf -decompress "$each" -o "$decompFile" > /dev/null 2>&1
   then
     decompressed+=("$decompFile")
   else
@@ -58,6 +61,7 @@ done
 for each in "${decompressed[@]}"
 do
   # find and replace with sed
+  LANG=C
   if sed -i.bak -e "s/Student ID: /StudentID:/g" "$each"
   then
     edited+=("$each")
@@ -66,7 +70,9 @@ do
     failure+=('fail find/replace: '"$each")
   fi
   # compress here
-  if ./cpdf -compress "$each" -o "$each" > /dev/null 2>&1
+  qpdf --compress-streams=y "$each" "$each" > /dev/null
+  if [ $? -eq 0 ] || [ $? -eq 3 ]
+  #if ./cpdf -compress "$each" -o "$each" > /dev/null 2>&1
   then
     compressed+=("each")
   else
@@ -74,22 +80,20 @@ do
   fi
 done
 
-echo merging
+echo merging edited files
 # merge into one big pdf
   outPath="$HOME"/Desktop/"$myDate"_MAP.pdf
-  if ./cpdf -merge "$tmpdir"/*.pdf -o $outPath 
+  qpdf --empty $outPath --pages "$tmpdir"/*.pdf --
+  if [ $? -eq 0 ] || [ $? -eq 3 ]
+  #if ./cpdf -merge "$tmpdir"/*.pdf -o $outPath 
   then
     echo created merged and edited file: "$outPath"
   else
     echo failed to create a merged file at "$outpath"
   fi
 
-
-# compress the PDF
-
-# combine the individual PDFs into a massive PDF
-
-totalPages=`./cpdf -pages $outPath`
+#totalPages=`./cpdf -pages $outPath`
+totalPages=`qpdf --show-npages $outPath`
 
 echo ----DECOMPRESSED: ${#decompressed[@]}
 echo ----EDITED: ${#edited[@]}
