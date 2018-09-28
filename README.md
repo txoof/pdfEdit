@@ -6,7 +6,7 @@ edits individual MAP reports into a single file ready for AlertSolutions in Powe
       pdfEdit.sh doc1.pdf doc2.pdf doc3.pdf
       pdfEdit.sh /path/to/*.pdf
       
-      An edited and combined version will be placed on the Desktop (Mac)
+  An edited and combined version will be placed on the Desktop (Mac)
 
 A platypus wrapped GUI version for the Mac can be found in the mapEdit.app.zip file. 
 
