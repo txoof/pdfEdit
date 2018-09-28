@@ -1,10 +1,13 @@
 # pdfEdit
 
-edits individual MAP reports into a single file ready for AlertSolutions in PowerSchool
+Edits individual MAP reports into a single file ready for Alert Solutions in PowerSchool.
 
-The script (mapEdit.sh) version can be run from the commandline:
+Alert Solutions can read a large PDF file containing information on multiple students and parse that file into individual emails. To distinguish one record from the next Alert Solutions looks for the following text (exactly and with absolutely no flexibility) where XXXXXX is the student number:
+      `StudentID:XXXXXX`
+     
+This script searches individual MAP test results in PDF Format or the line "Student ID: XXXXXX" and replaces it with the Alert Soluitons expectation and then combines the edited PDFs into a single large PDF file that Alert Solutions can use.
 
-command line usage:
+Command line usage:
 ------------------
       $] pdfEdit.sh doc1.pdf doc2.pdf doc3.pdf
       $] pdfEdit.sh /path/to/*.pdf
