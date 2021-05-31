@@ -6,7 +6,7 @@
 # "StudentID:" to improve compatability with Alert Solutions in PowerSchool
 # for mailing test results to parents
 
-export PATH="$PATH:/usr/local/bin/"
+export PATH="$PATH:/usr/local/bin/:/opt/homebrew/bin"
 
 
 myLongName='com.txoof.'`basename $0`
@@ -94,8 +94,8 @@ for each in "${decompressed[@]}"
 do
   # find and replace with sed
   # USE LANG=C to ignore non ASCII characters (this can be a train wreck)
-  LANG=C
-  if sed -i.bak -e "s/Student ID: /StudentID:/g" "$each"
+  # LANG=C
+  if LC_ALL=C sed -i.bak -e "s/Student ID: /StudentID:/g" "$each"
   then
     edited+=("$each")
     rm "$each".bak
