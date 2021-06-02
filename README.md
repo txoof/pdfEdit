@@ -1,5 +1,8 @@
 # pdfEdit
 
+## **Consider switching to Sedja Desktop**
+https://www.sejda.com/desktop
+
 Edits individual MAP reports into a single file ready for Alert Solutions in PowerSchool.
 
 Alert Solutions can read a large PDF file containing information on multiple students and parse that file into individual emails. To distinguish one record from the next Alert Solutions looks for the following text (exactly and with absolutely no flexibility) where XXXXXX is the student number:
